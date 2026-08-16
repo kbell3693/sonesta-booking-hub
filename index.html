@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sonesta Corporate Booking</title>
+<style>
+:root{--navy:#173956;--ink:#14324c;--orange:#dc6a24;--peach:#efb894;--cream:#f7f3ed;--white:#fff;--muted:#65778a;--line:#e7ded4}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--cream)}
+.hero{background:var(--navy);color:#fff;text-align:center;padding:48px 20px 42px}
+.brand{font-size:15px;letter-spacing:.3em;font-weight:700;margin-bottom:14px}
+h1{margin:0;font-size:clamp(32px,5vw,52px)} .sub{margin:14px auto 0;max-width:720px;font-size:18px}
+.wrap{max-width:1120px;margin:0 auto;padding:38px 22px 56px}
+.eyebrow{color:var(--orange);font-weight:800;letter-spacing:.15em;font-size:13px;text-transform:uppercase;margin-bottom:8px}
+h2{margin:0 0 10px;font-size:30px}.intro{margin:0 0 28px;color:var(--muted);font-size:17px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:26px;display:flex;flex-direction:column;min-height:250px}
+.hotel-no{color:var(--orange);font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+.hotel-name{font-size:22px;line-height:1.25;font-weight:800;margin-bottom:8px}.address{color:var(--muted);line-height:1.5;margin-bottom:22px}
+.btn{margin-top:auto;display:block;text-align:center;background:var(--peach);color:#fff;text-decoration:none;border-radius:10px;padding:15px 18px;font-weight:800;letter-spacing:.06em}
+.notice{background:#fff8f2;border:1px solid #f2d0ba;border-radius:14px;padding:18px 20px;margin-bottom:24px;color:#774321;display:none}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:0 20px 34px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="hero">
+<div class="brand">SONESTA</div>
+<h1 id="pageTitle">Corporate Booking</h1>
+<p class="sub">Choose your preferred Sonesta hotel and book using your company’s corporate rate.</p>
+</header>
+<main class="wrap">
+<div class="eyebrow">Choose Your Hotel</div>
+<h2>Four convenient hotel options</h2>
+<p class="intro">Select a hotel below to continue to Sonesta’s secure booking page.</p>
+<div id="missingNotice" class="notice">This booking link is missing a corporate promo code. Please use the link provided by your Sonesta sales contact.</div>
+<section class="grid">
+<article class="card"><div class="hotel-no">Hotel 01</div><div class="hotel-name">Sonesta ES Suites Dallas Richardson</div><div class="address">1040 Waterwood Drive, Richardson, TX 75082</div><a class="btn" data-hotel="32979" href="#">BOOK NOW</a></article>
+<article class="card"><div class="hotel-no">Hotel 02</div><div class="hotel-name">Sonesta Select Dallas Richardson</div><div class="address">2191 N. Greenville Avenue, Richardson, TX 75082</div><a class="btn" data-hotel="32585" href="#">BOOK NOW</a></article>
+<article class="card"><div class="hotel-no">Hotel 03</div><div class="hotel-name">Sonesta Simply Suites Dallas Richardson</div><div class="address">12525 Greenville Ave., Dallas, TX 75243</div><a class="btn" data-hotel="31904" href="#">BOOK NOW</a></article>
+<article class="card"><div class="hotel-no">Hotel 04</div><div class="hotel-name">Sonesta Simply Suites Fort Worth Fossil Creek</div><div class="address">5201 Endicott Avenue, Fort Worth, TX 76137</div><a class="btn" data-hotel="31911" href="#">BOOK NOW</a></article>
+</section>
+</main>
+<footer>Sonesta Hotels corporate booking portal</footer>
+<script>
+const params=new URLSearchParams(window.location.search);
+const companyName=(params.get("companyName")||"").trim();
+const promoCode=(params.get("promoCode")||"").trim();
+document.getElementById("pageTitle").textContent=companyName?companyName+" Corporate Booking":"Corporate Booking";
+const buttons=document.querySelectorAll(".btn");
+if(!promoCode){
+ document.getElementById("missingNotice").style.display="block";
+ buttons.forEach(btn=>{btn.removeAttribute("href");btn.style.opacity=".55";btn.style.cursor="not-allowed";});
+}else{
+ buttons.forEach(btn=>{
+  const booking=new URL("https://be.synxis.com/");
+  booking.searchParams.set("Hotel",btn.dataset.hotel);
+  booking.searchParams.set("Chain","5157");
+  booking.searchParams.set("promo",promoCode);
+  btn.href=booking.toString();btn.target="_blank";btn.rel="noopener noreferrer";
+ });
+}
+</script>
+</body>
+</html>
