@@ -31,14 +31,14 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:0 20px 34px}
 </header>
 <main class="wrap">
 <div class="eyebrow">Choose Your Hotel</div>
-<h2>Four convenient hotel options</h2>
+<h2 id="hotelHeading">Choose your Sonesta hotel</h2>
 <p class="intro">Select a hotel below to continue to Sonesta’s secure booking page.</p>
 <div id="missingNotice" class="notice">This booking link is missing a corporate promo code. Please use the link provided by your Sonesta sales contact.</div>
-<section class="grid">
-<article class="card"><div class="hotel-no">Hotel 01</div><div class="hotel-name">Sonesta ES Suites Dallas Richardson</div><div class="address">1040 Waterwood Drive, Richardson, TX 75082</div><a class="btn" data-hotel="32979" href="#">BOOK NOW</a></article>
-<article class="card"><div class="hotel-no">Hotel 02</div><div class="hotel-name">Sonesta Select Dallas Richardson</div><div class="address">2191 N. Greenville Avenue, Richardson, TX 75082</div><a class="btn" data-hotel="32585" href="#">BOOK NOW</a></article>
-<article class="card"><div class="hotel-no">Hotel 03</div><div class="hotel-name">Sonesta Simply Suites Dallas Richardson</div><div class="address">12525 Greenville Ave., Dallas, TX 75243</div><a class="btn" data-hotel="31904" href="#">BOOK NOW</a></article>
-<article class="card"><div class="hotel-no">Hotel 04</div><div class="hotel-name">Sonesta Simply Suites Fort Worth Fossil Creek</div><div class="address">5201 Endicott Avenue, Fort Worth, TX 76137</div><a class="btn" data-hotel="31911" href="#">BOOK NOW</a></article>
+<section class="grid" id="hotelGrid">
+<article class="card" data-code="ES"><div class="hotel-no">Hotel 01</div><div class="hotel-name">Sonesta ES Suites Dallas Richardson</div><div class="address">1040 Waterwood Drive, Richardson, TX 75082</div><a class="btn" data-hotel="32979" href="#">BOOK NOW</a></article>
+<article class="card" data-code="SELECT"><div class="hotel-no">Hotel 02</div><div class="hotel-name">Sonesta Select Dallas Richardson</div><div class="address">2191 N. Greenville Avenue, Richardson, TX 75082</div><a class="btn" data-hotel="32585" href="#">BOOK NOW</a></article>
+<article class="card" data-code="SIMPLYDAL"><div class="hotel-no">Hotel 03</div><div class="hotel-name">Sonesta Simply Suites Dallas Richardson</div><div class="address">12525 Greenville Ave., Dallas, TX 75243</div><a class="btn" data-hotel="31904" href="#">BOOK NOW</a></article>
+<article class="card" data-code="SIMPLYFW"><div class="hotel-no">Hotel 04</div><div class="hotel-name">Sonesta Simply Suites Fort Worth Fossil Creek</div><div class="address">5201 Endicott Avenue, Fort Worth, TX 76137</div><a class="btn" data-hotel="31911" href="#">BOOK NOW</a></article>
 </section>
 </main>
 <footer>Sonesta Hotels corporate booking portal</footer>
@@ -46,7 +46,23 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:0 20px 34px}
 const params=new URLSearchParams(window.location.search);
 const companyName=(params.get("companyName")||"").trim();
 const promoCode=(params.get("promoCode")||"").trim();
+const hotelsParam=(params.get("hotels")||"").trim();
+
 document.getElementById("pageTitle").textContent=companyName?companyName+" Corporate Booking":"Corporate Booking";
+
+const cards=[...document.querySelectorAll(".card")];
+if(hotelsParam){
+ const selectedHotels=new Set(hotelsParam.split(",").map(v=>v.trim().toUpperCase()).filter(Boolean));
+ cards.forEach(card=>{
+  if(!selectedHotels.has(card.dataset.code)) card.style.display="none";
+ });
+}
+
+const visibleCards=cards.filter(card=>card.style.display!=="none");
+const hotelHeading=document.getElementById("hotelHeading");
+if(visibleCards.length===1) hotelHeading.textContent="Your Sonesta hotel";
+else hotelHeading.textContent="Choose your Sonesta hotel";
+
 const buttons=document.querySelectorAll(".btn");
 if(!promoCode){
  document.getElementById("missingNotice").style.display="block";
